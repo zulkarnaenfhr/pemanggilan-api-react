@@ -1,0 +1,3 @@
+start npm start dan
+start juga json-server --watch db.json --port 3004 
+(nama port bebas)

@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import Post from "./Component/Post/Post";
 import "./Blog-Post.css";
 import axios from "axios";
+import { API } from "./Service";
 
 class BlogPost extends Component {
     constructor(props) {
@@ -26,14 +27,15 @@ class BlogPost extends Component {
         this.putDataAPI = this.putDataAPI.bind(this);
         this.postDataAPI = this.postDataAPI.bind(this);
     }
-    handleRemove = async (data) => {
-        await axios.delete(`http://localhost:1414/posts/${data}`);
-        await this.getDataAPI();
+    handleRemove = async (id) => {
+        API.deleteNewsBlog(id).then((res) => {
+            this.getDataAPI();
+        });
     };
     getDataAPI = () => {
-        axios.get("http://localhost:1414/posts?_sort=id&_order=desc").then((data) => {
+        API.getNewsBlog().then((data) => {
             this.setState({
-                data: data.data,
+                data: data,
                 statusLoad: true,
             });
         });
@@ -51,13 +53,20 @@ class BlogPost extends Component {
         this.setState({
             formBlogPost: formBlogPostNew,
         });
-        console.log("state baru", this.state.formBlogPost);
     };
-    postDataAPI = async () => {
-        await axios.post("http://localhost:1414/posts", this.state.formBlogPost);
-        this.getDataAPI();
+    postDataAPI = () => {
+        API.postNewsBlog(this.state.formBlogPost).then((res) => {
+            this.getDataAPI();
+        });
     };
     putDataAPI = async () => {
+        // API.putNewsBlog(this.state.formBlogPost, this.state.formBlogPost.id).then((res) => {
+        //     this.getDataAPI();
+        //     this.setState({
+        //         isUpdate: false,
+        //     });
+        // });
+        // API.putNewsBlog(this.state.formBlogPost,this.state.formBlogPost)
         await axios.put(`http://localhost:1414/posts/${this.state.formBlogPost.id}`, this.state.formBlogPost);
         this.setState({
             isUpdate: false,
@@ -93,7 +102,6 @@ class BlogPost extends Component {
             formBlogPost: data,
             isUpdate: true,
         });
-        console.log(data);
     };
     render() {
         return (
